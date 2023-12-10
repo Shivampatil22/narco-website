@@ -230,6 +230,12 @@ const ViewInquiryForm = (
     dateValid,
   ]);
 
+  useEffect(()=>{
+    userData.Citta = null;
+    userData.bags=null;
+    userData.carSize=null;
+  },[value])
+
   const handleDepartureChange = (value) => {
     const departureDateFromForm = new Date(value);
     const minNights = parseInt(offer["minimo notti"]);
@@ -842,9 +848,9 @@ return (
                   <br />
                   <Input
                     handleChange={handleChange}
-                    name="numeroBagagliAlis"
+                    name="bags"
                     type="number"
-                    value={userData.numeroBagagliAlis}
+                    value={userData.bags}
                     label="Numero di Bagagli *"
                   // select
                   // options={options}
@@ -871,9 +877,9 @@ return (
                 <>
                   <br />
                   <Input
-                    value={userData.ferry}
+                    value={userData.carSize}
                     handleChange={handleChange}
-                    name={"ferry"}
+                    name={"carSize"}
                     label="Dimensione Auto"
                     select
                     options={options2}
@@ -950,19 +956,24 @@ return (
                     </div> */}
                   <div className="col-sm-6">
 
-                    <Autocomplete
-                      onLoad={autocomplete => (autocomplete = autocomplete)}
-                      options={{
-                        types: ['(cities)'],
-                        language: 'it' // Set language to Italian
-                      }}
-                    >
-                      <Input
-                        type="text"
-                        label="Città de Partenza"
-                        placeholder="Inserisci la città di partenza"
-                      />
-                    </Autocomplete>
+                  <Autocomplete
+                    onLoad={autocomplete => (autocomplete = autocomplete)}
+                    options={{
+                      types: ['(cities)'],
+                      language: 'it'
+                    }}
+                  >
+                    <Input
+                      type="text"
+                      label="Città de Partenza"
+                      placeholder="Inserisci la città di partenza"
+                      value ={userData.Citta}
+                      name = "Citta"
+                      handleChange={handleChange}
+                      style={{ fontFamily: 'chillax', fontSize: '16px' }}
+                    />
+                  </Autocomplete>
+
                     {/* <ul className="city-suggestion-list" ref={cityInput}>
                       {suggestions.map((suggestion, indx) => (
                         suggestion && <li key={indx} onClick={() => { cityInput.current.style.display = "none"; setCity(suggestion) }} className="city-suggestion">{suggestion}</li>
@@ -1064,6 +1075,10 @@ const options2 = [
     options:
       "traghetto con auto fino 4 mt. da Pozzuoli A/R € 75 - passeggeri € 22",
     text: "traghetto con auto fino 4 mt. da Pozzuoli A/R € 75 - passeggeri € 22",
+  },
+  {
+    options : "traghetto con auto tra i 4 mt. fino ai 4.5 mt. da Pozzuoli A/R € 90 - passeggeri € 22",
+    text : "traghetto con auto tra i 4 mt. fino ai 4.5 mt. da Pozzuoli A/R € 90 - passeggeri € 22",
   },
   {
     options:
