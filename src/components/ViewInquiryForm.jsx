@@ -259,9 +259,16 @@ const ViewInquiryForm = (
   };
 
   const handleChange = (e) => {
+    console.log(e.target.value)
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
+  const handleChangeInCity=()=>{
+    setUserData({
+      ...userData,
+      [cityInput.current.name]: cityInput.current.value,
+    });
+  }
   const departureRef = createRef(null);
 
   const arrivalRef = createRef(null);
@@ -586,68 +593,90 @@ return (
                                     />
                                 </div> */}
 
-              <div className="right-sm-0 w-100" style={{opacity: `${readOnly?"0.8":"1"}`}}>
-                {
-                  offer.minStay != offer.maxStay ?
-                    <CustomDatePicker
-                      setDatePickerOpen={setDatePickerOpen}
-                      minDate={new Date(offer.startDate) >= new Date() ? new Date(offer.startDate) : new Date() + 1}
-                      maxDate={new Date(new Date(offer.endDate).getTime() - offer.minStay * 24 * 60 * 60 * 1000)}
-                      selected={departure}
-                      label="Data Check In"
-                      placeholder="Seleziona la data"
+              <div
+                className="right-sm-0 w-100"
+                style={{ opacity: `${readOnly ? "0.8" : "1"}` }}
+              >
+                {offer.minStay != offer.maxStay ? (
+                  <CustomDatePicker
+                    setDatePickerOpen={setDatePickerOpen}
+                    minDate={
+                      new Date(offer.startDate) >= new Date()
+                        ? new Date(offer.startDate)
+                        : new Date() + 1
+                    }
+                    maxDate={
+                      new Date(
+                        new Date(offer.endDate).getTime() -
+                          offer.minStay * 24 * 60 * 60 * 1000
+                      )
+                    }
+                    selected={departure}
+                    label="Data Check In"
+                    placeholder="Seleziona la data"
+                    handleChange={(value) => {
+                      let persistDateNew = { ...persistDate };
+                      persistDateNew[idx] = value;
+                      setDeparture(value);
+                      handleDepartureChange(value);
+                      setPersistDate(persistDateNew);
 
-                      handleChange={(value) => {
-                        let persistDateNew = {...persistDate}
-                        persistDateNew[idx]=value;
-                        setDeparture(value);
-                        handleDepartureChange(value);
-                        setPersistDate(persistDateNew)
+                      localStorage.setItem("prevInDate", value);
 
-                        localStorage.setItem("prevInDate",value);
+                      let persistReadOnlyNewArrival = {
+                        ...persistReadOnlyArrival,
+                      };
+                      persistReadOnlyNewArrival[idx] = false;
+                      setPersistReadOnlyArrival(persistReadOnlyNewArrival);
+                      setReadOnlyArrival(persistReadOnlyNewArrival[idx]);
+                    }}
+                    setDeparture={setDeparture}
+                    readOnly={readOnly}
+                    persistDate={persistDate[idx]}
+                    setArrival={setArrival}
+                    persistArrival={persistArrival[idx]}
+                  />
+                ) : (
+                  <CustomDatePicker
+                    setDatePickerOpen={setDatePickerOpen}
+                    minDate={
+                      new Date(offer.startDate) >= new Date()
+                        ? new Date(offer.startDate)
+                        : new Date() + 1
+                    }
+                    maxDate={
+                      new Date(
+                        new Date(offer.endDate).getTime() -
+                          offer.minStay * 24 * 60 * 60 * 1000
+                      )
+                    }
+                    selected={departure}
+                    isDateDisabled={disabledDates}
+                    label="Data Check In"
+                    placeholder="Seleziona la data"
+                    handleChange={(value) => {
+                      let persistDateNew = { ...persistDate };
+                      persistDateNew[idx] = value;
+                      setDeparture(value);
+                      handleDepartureChange(value);
+                      setPersistDate(persistDateNew);
 
-                        let persistReadOnlyNewArrival = {...persistReadOnlyArrival}
-                        persistReadOnlyNewArrival[idx]=false;
-                        setPersistReadOnlyArrival(persistReadOnlyNewArrival)
-                        setReadOnlyArrival(persistReadOnlyNewArrival[idx])
-                        
-                      }}
-                      setDeparture={setDeparture}
-                      readOnly={readOnly}
-                      persistDate={persistDate[idx]}
-                      setArrival={setArrival}
-                      persistArrival={persistArrival[idx]}
-                    /> : <CustomDatePicker
-                      setDatePickerOpen={setDatePickerOpen}
-                      minDate={new Date(offer.startDate) >= new Date() ? new Date(offer.startDate) : new Date() + 1}
-                      maxDate={new Date(new Date(offer.endDate).getTime() - offer.minStay * 24 * 60 * 60 * 1000)}
-                      selected={departure}
-                      isDateDisabled={disabledDates}
-                      label="Data Check In"
-                      placeholder="Seleziona la data"
+                      localStorage.setItem("prevInDate", value);
 
-                      handleChange={(value) => {
-                        let persistDateNew = {...persistDate}
-                        persistDateNew[idx]=value;
-                        setDeparture(value);
-                        handleDepartureChange(value);
-                        setPersistDate(persistDateNew)
-
-
-                        localStorage.setItem("prevInDate",value);
-
-                        let persistReadOnlyNewArrival = {...persistReadOnlyArrival}
-                        persistReadOnlyNewArrival[idx]=false;
-                        setPersistReadOnlyArrival(persistReadOnlyNewArrival)
-                        setReadOnlyArrival(persistReadOnlyNewArrival[idx])
-                      }}
-                      setDeparture={setDeparture}
-                      readOnly={readOnly}
-                      persistDate={persistDate[idx]}
-                      setArrival={setArrival}
-                      persistArrival={persistArrival[idx]}
-                    />
-                }
+                      let persistReadOnlyNewArrival = {
+                        ...persistReadOnlyArrival,
+                      };
+                      persistReadOnlyNewArrival[idx] = false;
+                      setPersistReadOnlyArrival(persistReadOnlyNewArrival);
+                      setReadOnlyArrival(persistReadOnlyNewArrival[idx]);
+                    }}
+                    setDeparture={setDeparture}
+                    readOnly={readOnly}
+                    persistDate={persistDate[idx]}
+                    setArrival={setArrival}
+                    persistArrival={persistArrival[idx]}
+                  />
+                )}
               </div>
 
               {/* <Input
@@ -699,52 +728,72 @@ return (
                                     />
                                 </div> */}
 
-              <div className="right-sm-0 w-100"  style={{opacity: `${readOnlyArrival?"0.8":"1"}`}}>
-                {
-                  offer.minStay != offer.maxStay ?
-                    <CustomDatePicker
-                      minDate={offer.minStay != offer.maxStay ? new Date(new Date(departure).getTime() + offer.minStay * 24 * 60 * 60 * 1000) : new Date(departure)}
-                      maxDate={new Date(offer.endDate)}
-                      setDatePickerOpen={setDatePickerOpen}
-                      selected={arrival}
-                      label="Data Check Out"
-                      placeholder="Seleziona la data di arrivo"
-                      handleChange={(value) => {
-                        setArrival(value);
-                        handleArrivalChange(value);
-                        let persistArrivalNew = {...persistArrival}
-                        persistArrivalNew[idx]=value;
-                        setPersistArrival(persistArrivalNew)
-                        localStorage.setItem("prevOutDate",value)
-                      }}
-                      setDeparture={setDeparture}
-                      readOnly={readOnlyArrival}
-                      persistDate={persistDate[idx]}
-                      setArrival={setArrival}
-                      persistArrival={persistArrival[idx]}
-                    /> : <CustomDatePicker
-                      minDate={offer.minStay != offer.maxStay ? (new Date(new Date(departure).getTime() + offer.minStay * 24 * 60 * 60 * 1000)) : new Date(new Date(departure).getTime() + 24 * 60 * 60 * 1000)}
-                      maxDate={new Date(offer.endDate)}
-                      setDatePickerOpen={setDatePickerOpen}
-                      isDateDisabled={disabledDates}
-                      selected={arrival}
-                      label="Data Check Out"
-                      placeholder="Seleziona la data di arrivo"
-                      handleChange={(value) => {
-                        setArrival(value);
-                        handleArrivalChange(value);
-                        let persistArrivalNew = {...persistArrival}
-                        persistArrivalNew[idx]=value;
-                        setPersistArrival(persistArrivalNew)
-                        localStorage.setItem("prevOutDate",value)
-                      }}
-                      setDeparture={setDeparture}
-                      readOnly={readOnlyArrival}
-                      persistDate={persistDate[idx]}
-                      setArrival={setArrival}
-                      persistArrival={persistArrival[idx]}
-                    />
-                }
+              <div
+                className="right-sm-0 w-100"
+                style={{ opacity: `${readOnlyArrival ? "0.8" : "1"}` }}
+              >
+                {offer.minStay != offer.maxStay ? (
+                  <CustomDatePicker
+                    minDate={
+                      offer.minStay != offer.maxStay
+                        ? new Date(
+                            new Date(departure).getTime() +
+                              offer.minStay * 24 * 60 * 60 * 1000
+                          )
+                        : new Date(departure)
+                    }
+                    maxDate={new Date(offer.endDate)}
+                    setDatePickerOpen={setDatePickerOpen}
+                    selected={arrival}
+                    label="Data Check Out"
+                    placeholder="Seleziona la data di arrivo"
+                    handleChange={(value) => {
+                      setArrival(value);
+                      handleArrivalChange(value);
+                      let persistArrivalNew = { ...persistArrival };
+                      persistArrivalNew[idx] = value;
+                      setPersistArrival(persistArrivalNew);
+                      localStorage.setItem("prevOutDate", value);
+                    }}
+                    setDeparture={setDeparture}
+                    readOnly={readOnlyArrival}
+                    persistDate={persistDate[idx]}
+                    setArrival={setArrival}
+                    persistArrival={persistArrival[idx]}
+                  />
+                ) : (
+                  <CustomDatePicker
+                    minDate={
+                      offer.minStay != offer.maxStay
+                        ? new Date(
+                            new Date(departure).getTime() +
+                              offer.minStay * 24 * 60 * 60 * 1000
+                          )
+                        : new Date(
+                            new Date(departure).getTime() + 24 * 60 * 60 * 1000
+                          )
+                    }
+                    maxDate={new Date(offer.endDate)}
+                    setDatePickerOpen={setDatePickerOpen}
+                    isDateDisabled={disabledDates}
+                    selected={arrival}
+                    label="Data Check Out"
+                    placeholder="Seleziona la data di arrivo"
+                    handleChange={(value) => {
+                      setArrival(value);
+                      handleArrivalChange(value);
+                      let persistArrivalNew = { ...persistArrival };
+                      persistArrivalNew[idx] = value;
+                      setPersistArrival(persistArrivalNew);
+                      localStorage.setItem("prevOutDate", value);
+                    }}
+                    setDeparture={setDeparture}
+                    readOnly={readOnlyArrival}
+                    persistDate={persistDate[idx]}
+                    setArrival={setArrival}
+                    persistArrival={persistArrival[idx]}
+                  />
+                )}
               </div>
 
               <div className="absolute top-0 left-0 w-100 px-2">
@@ -773,9 +822,8 @@ return (
                 value={selectItems[selectedPackage]}
                 handleChange={(e) => {
                   selectItems.forEach((item, i) => {
-                    if (item?.price != 0)
-                      setSelectedPackage(e.target.value);
-                      localStorage.setItem("selectedPackage",e.target.value)
+                    if (item?.price != 0) setSelectedPackage(e.target.value);
+                    localStorage.setItem("selectedPackage", e.target.value);
                   });
                 }}
                 name="packageBoard"
@@ -852,8 +900,8 @@ return (
                     type="number"
                     value={userData.bags}
                     label="Numero di Bagagli *"
-                  // select
-                  // options={options}
+                    // select
+                    // options={options}
                   />
                 </>
               )}
@@ -924,13 +972,10 @@ return (
                   checked={value === "viaggio"}
                   onChange={(e) => setvalue("viaggio")}
                 />
-                <div className="form-check-label">
-                  Viaggio dalla tua citta
-                </div>
+                <div className="form-check-label">Viaggio dalla tua citta</div>
               </div>
               <div className="text">
-                Viaggio incluso dalla tua città fino al trasferimento
-                all'hotel
+                Viaggio incluso dalla tua città fino al trasferimento all'hotel
               </div>
               {value == "viaggio" && (
                 <div className="row g-3 mt-2">
@@ -955,31 +1000,32 @@ return (
                       />
                     </div> */}
                   <div className="col-sm-6">
+                    <Autocomplete
+                      onLoad={(autocomplete) => (autocomplete = autocomplete)}
+                      options={{
+                        types: ["(cities)"],
+                        language: "it",
+                      }}
+                      onPlaceChanged={(place)=>{handleChangeInCity()}}
 
-                  <Autocomplete
-                    onLoad={autocomplete => (autocomplete = autocomplete)}
-                    options={{
-                      types: ['(cities)'],
-                      language: 'it'
-                    }}
-                  >
-                    <Input
-                      type="text"
-                      label="Città de Partenza"
-                      placeholder="Inserisci la città di partenza"
-                      value ={userData.Citta}
-                      name = "Citta"
-                      handleChange={handleChange}
-                      style={{ fontFamily: 'chillax', fontSize: '16px' }}
-                    />
-                  </Autocomplete>
+                    >
+                      <Input
+                        type="text"
+                        label="Città de Partenza"
+                        placeholder="Inserisci la città di partenza"
+                        value={userData.Citta}
+                        name="Citta"
+                        handleChange={handleChange}
+                        style={{ fontFamily: "chillax", fontSize: "16px" }}
+                        ref={cityInput}
+                      />
+                    </Autocomplete>
 
                     {/* <ul className="city-suggestion-list" ref={cityInput}>
                       {suggestions.map((suggestion, indx) => (
                         suggestion && <li key={indx} onClick={() => { cityInput.current.style.display = "none"; setCity(suggestion) }} className="city-suggestion">{suggestion}</li>
                       ))}
                     </ul> */}
-
                   </div>
                 </div>
               )}
@@ -1015,8 +1061,8 @@ return (
                 target="_blank"
                 rel="noreferrer"
               >
-                trattamento dei miei dati personali in conformitä al
-                Regolamento europeo 679/2016 *
+                trattamento dei miei dati personali in conformitä al Regolamento
+                europeo 679/2016 *
               </a>
             </span>
           </label>
@@ -1029,8 +1075,8 @@ return (
               id="flexCheckDefault"
             />
             <span className="form-check-label">
-              Dichiaro di volermi iscrivere al servizio newsletter per
-              ricevere Ie migliori offerte
+              Dichiaro di volermi iscrivere al servizio newsletter per ricevere
+              Ie migliori offerte
             </span>
           </label>
           {buttonDisabled ? (
@@ -1047,11 +1093,7 @@ return (
             <div className="pt-4">
               <button className="cmn-btn w-100" type="submit">
                 {sending ? (
-                  <img
-                    style={{ width: "25px" }}
-                    src={loading}
-                    alt="loading"
-                  />
+                  <img style={{ width: "25px" }} src={loading} alt="loading" />
                 ) : (
                   <>
                     Richiedi Preventivo <Send />
